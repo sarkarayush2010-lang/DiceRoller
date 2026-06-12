@@ -1,4 +1,4 @@
-##Dice Roller
+Dice Roller
 ---
 ## Description
 Created by me!  
