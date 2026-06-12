@@ -68,4 +68,11 @@ The dice on the left(Desktop) or top (Mobile) will spin and settle on some value
 Thats it!  
 
 ---
+## AI use and Other Resource things
+I'm extremely proud to say THIS ISNT AI SLOP (lets go)
+As a lot of this was new to me (only knew basic html,css, and python) So i had to search up how to add a lot of things.    
+I used w3 schools to learn a lot of the content, and searched some other things up (does google's AI mode count reaaallly count as AI usage?)    
+The images that I used are from needpix.com and have a creative commons license.  
+the only time I used actual generative ai (gemini) was for uploading the project to vercel as I couldn't figure that out  
+and no this readme isnt ai generated
 
