@@ -8,6 +8,7 @@ It's never been easier and cleaner to roll dice. just set the amount of dice and
 Made with Flask and Bootstrap along with CSS and Javascript (new skill aquired for me!), this project is simple and reliable.  
 
 This project was created for Hack Club's Horizons Event!
+P.S. The project was rejected for having an AI genereated readme? uh no i didnt ai generate this do you think ai can match my greatness? 
 ---
 
 ## Features
@@ -37,17 +38,6 @@ Uses two files for the main program, app.py and rollmultiple.html.
 app.py handles flask management of commands sent by rollmultiple.html. It generates random numbers and sends it back.
 rollmultiple.html has 3 main parts. Theres HTML code for the overall structure of the website. Towards the top there is CSS code for the styling of the page. Towards the bottom is a Javascript script, that handles the interactive portions of the site.
 
-```text
-📁 DiceRoller/
-│
-├── 📁 templates/
-│   └── rollmultiple.html         # Main Bootstrap UI with custom CSS and JavaScript Styling and functions. runs frontend
-│
-├── app.py                # Flask server that handles /roll rng command. Backend
-├── requirements.txt      # Needed to deploy python app through vercel
-└── vercel.json           # Vercel Configuration
-
-```
 ---
 ## Motivation
 
