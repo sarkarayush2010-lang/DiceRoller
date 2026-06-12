@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    <title>Title</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+    <style>
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(360deg) scale(1.2);
+                
+            }
+
+            100% {
+                transform: rotate(720deg) scale(1);
+            }
+        }
+
+        .spinning {
+            animation: spin 0.8s ease-out;
+        }
+
+        .dice-box {
+            width: 120px;
+            height: 120px;
+            font-size: 3.5rem;
+            font-weight: bold;
+            user-select: none;
+            margin: 10px auto;
+
+        }
+    </style>
+</head>
+
+<body class="bg-body-tertiary vh-100 d-flex flex-column justify-content-center">
+    <header>
+        <h1> Dice Roller </h1>
+    </header>
+    <main>
+        <div class="slider">
+            <label for="numsides"> Sides </label>
+            <input type="range" id="numsides" min="2" max="20" step="1" value="6" oninput="updateSlider(this.value)">
+            <div id="dice"
+                class="card dice-box d-flex align-items-center justify-content-center shadow border-3 text-body rounded-4 mb-4">
+                1
+            </div>
+            <button id="roll-btn" class="btn btn-primary btn-lg px-4 fs-5 shadow-sm" onclick="rollDice()">
+                Roll Dice
+            </button>
+        </div>
+    </main>
+    <script>
+        function updateSlider(val) {
+            document.getElementById('slider-value').innerText = val;
+        }
+        async function rollDice() {
+            const dice = document.getElementById('dice');
+            const btn = document.getElementById("roll-btn");
+            const sides = document.getElementById('numsides').value;
+            btn.disabled = true;
+            try {
+                const response = await fetch(`/roll?sides=${sides}`);
+                const data = await response.json();
+                const result = data.result;
+                dice.classList.add('spinning');
+                setTimeout(() => {
+                    dice.innerText = result;
+
+                }, 400)
+                setTimeout(() => {
+                    dice.classList.remove('spinning');
+                    btn.disabled = false;
+                }, 800);
+            }
+            catch (error) {
+                console.error("Cant fetch roll.  ------   Full details:", error);
+                btn.disabled = false;
+            }
+        }
+    </script>
+    <footer>
+        </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

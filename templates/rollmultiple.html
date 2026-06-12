@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    <title>Dice Roller! - Roll Dice for Monopoly, Trouble, and More! </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+    <style>
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(360deg) scale(1.2);
+            }
+
+            100% {
+                transform: rotate(720deg) scale(1);
+            }
+        }
+
+        .spinning {
+            animation: spin 0.8s ease-out;
+        }
+
+        .dice-box {
+            width: 140px;
+            height: 140px;
+            font-size: 3rem;
+            font-weight: bold;
+            user-select: none;
+            margin: 10px;
+            border-radius: 40% !important
+        }
+
+        .circle-stage {
+            min-height: 300px;
+        }
+
+        body {
+            background-color: rgb(3, 128, 28) !important;
+
+            color: rgb(59, 45, 3) !important;
+        }
+        #roll-btn{
+            background-color: rgb(58, 42, 0);
+            border-color: rgb(153, 131, 75);
+            color:rgb(201, 197, 178);
+        }
+        #roll-btn:hover{
+            background-color: rgb(94, 72, 6) !important ;
+            border-color: rgb(201, 197, 178);
+        }
+        .form-range::-webkit-slider-thumb{
+            background-color: rgb(128, 89, 19);
+        }
+        
+    </style>
+</head>
+
+<body class="bg-body-primary vh-100 d-flex flex-column justify-content-center">
+    <header class="text-center">
+        <h1 style="font-size: 8em; font-family: 'Brush Script MT', cursive;">Dice Roll Generator</h1>
+        <h3>Use for board games, choosing who goes first, or even gambling all your life savings!</h3>
+        <h5>(created by the coolest person of all time, Ayush S)</h5>
+
+    </header>
+    <main>
+        <main class="container-fluid px-4">
+            <div class="row align-items-center vh-75">
+
+                <div class="col-md-6 d-flex flex-column align-items-center justify-content-center circle-stage">
+                    <div id="dice-container" class="d-flex flex-wrap justify-content-center align-items-center">
+                        <div class="card dice-box d-flex align-items-center justify-content-center border-3 text-body">
+                            <img src="https://storage.needpix.com/rsynced_images/dice-312625_1280.png"
+                                style="width:100%; height:100%; object-fit:cover;" alt="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 px-lg-5">
+                    <div class="text-md-start text-center mb-4">
+                        <h1 class="display-4 fw-bold" style="font-size: 4em;">Settings</h1>
+                        <p style="color: rgb(23, 18, 2)">Choose from my amazing, perfect, cool presets!
+                            or make your own to match any game!
+                        </p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="presets" class="form-label fw-bold" style="color: rgb(59, 45, 3)">Game presets! More (may be) coming
+                            soon!</label>
+                        <select class="form-select border-2" id="presets" onchange="applyPreset(this.value)">
+                            <option value="custom"> Custom (use sliders to adjust values!)</option>
+                            <option value="monopoly">2 Dice, 6 sides -- standard for games like monopoly or catan (both
+                                my favs)
+                            </option>
+                            <option value="8sides">1 dice, 8 sides -- extra large dice for things like snakes and
+                                ladders!
+                            </option>
+                            <option value="dnd">4 Dice, 6 Sides -- Dungeons and Dragons (i dont play but should I?) and
+                                more!
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="slider mb-4">
+                        <label for="numsides" class="form-label fw-bold">Sides: <span id="slider-value">6</span></label>
+                        <input type="range" class="form-range" id="numsides" min="2" max="20" step="1" value="6"
+                            oninput="updateSlider(this.value)">
+
+                        <label for="numdice" class="form-label fw-bold mt-3">Dice Count: <span
+                                id="dice-count-value">1</span></label>
+                        <input type="range" class="form-range" id="numdice" min="1" max="6" step="1" value="1"
+                            oninput="updateDiceCount(this.value)">
+                    </div>
+
+                    <button id="roll-btn" class="btn btn-primary btn-lg py-3 fs-5 shadow-sm w-100 fw-bold"
+                        onclick="rollDice()">
+                        !!!!!ROLL!!!!!!
+                    </button>
+                </div>
+
+            </div>
+        </main>
+
+
+    </main>
+    <script>
+        //images - we can change these to look cooler - also they're creative commons so i can use!
+        //the dice will only show images until 6 because it's easier to read numbers above that (and easier for me to code yay!)
+        const diceImages = {
+            1: "https://storage.needpix.com/rsynced_images/dice-312625_1280.png",
+            2: "https://storage.needpix.com/rsynced_images/dice-312627_1280.png",
+            3: "https://storage.needpix.com/rsynced_images/dice-312624_1280.png",
+            4: "https://storage.needpix.com/rsynced_images/dice-312623_1280.png",
+            5: "https://storage.needpix.com/rsynced_images/dice-312622_1280.png",
+            6: "https://storage.needpix.com/rsynced_images/dice-310333_1280.png"
+        };
+
+        function getDiceImage(value) {
+            if (diceImages[value]) { //for those under or equal to 6
+                return `<img src="${diceImages[value]}" style="width:100%; height:100%; object-fit:cover;" alt="${value}">`;
+            }
+            return value; //for anything over 6
+        }
+
+        function updateSlider(val) {
+            document.getElementById('slider-value').innerText = val;
+        }
+
+        function updateDiceCount(val) {
+            document.getElementById('dice-count-value').innerText = val;
+            const container = document.getElementById('dice-container');
+            container.innerHTML = '';
+
+            for (let i = 0; i < val; i++) {
+                container.innerHTML += `
+                    <div class="card dice-box d-flex align-items-center justify-content-center border-3 text-body">
+                        ${getDiceImage(1)}
+                    </div>
+                `;
+            }
+        }
+
+        async function rollDice() {
+            const container = document.getElementById('dice-container');
+            const diceElements = container.querySelectorAll('.dice-box');
+            const btn = document.getElementById("roll-btn");
+
+            const sides = document.getElementById('numsides').value;
+            const amount = document.getElementById('numdice').value;
+
+            btn.disabled = true;
+            try {
+                const response = await fetch(`/roll?sides=${sides}&amount=${amount}`);
+                const data = await response.json();
+                const results = data.results;
+
+                diceElements.forEach((dice) => {
+                    dice.classList.add('spinning');
+                });
+
+                setTimeout(() => {
+                    diceElements.forEach((dice, index) => {
+                        dice.innerHTML = getDiceImage(results[index]);
+                    });
+                }, 400);
+
+                setTimeout(() => {
+                    diceElements.forEach((dice) => {
+                        dice.classList.remove('spinning');
+                    });
+                    btn.disabled = false;
+                }, 800);
+            }
+            catch (error) {
+                console.error("Cant fetch roll.  ------   Full details:", error);
+                btn.disabled = false;
+            }
+        }
+        function applyPreset(presetName) {
+            const sidesSlider = document.getElementById('numsides');
+            const diceSlider = document.getElementById('numdice');
+
+
+            if (presetName == 'monopoly') {
+                sidesSlider.value = 6;
+                diceSlider.value = 2;
+            }
+            else if (presetName == '8sides') {
+                sidesSlider.value = 8;
+                diceSlider.value = 1;
+            }
+            else if (presetName == 'dnd') {
+                sidesSlider.value = 6;
+                diceSlider.value = 4;
+            }
+            else { return; }
+            updateSlider(sidesSlider.value);
+            updateDiceCount(diceSlider.value);
+        }
+
+    </script>
+    <footer>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
